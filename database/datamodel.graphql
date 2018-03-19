@@ -8,8 +8,14 @@ type User {
 
 type Cart {
   id: ID! @unique
-  user: User!
-  products: [Product!]!
+  user: User
+  products: [CartProduct!]!
+}
+
+type CartProduct {
+  id: ID! @unique
+  cart: Cart!
+  product: Product!
 }
 
 type Product {

@@ -11,7 +11,6 @@ const auth = {
     if (!valid) {
       throw new Error('Invalid password')
     }
-
     return {
       token: jwt.sign({ userId: user.id }, 'JWT_SECRET'),
       user,
@@ -22,6 +21,7 @@ const auth = {
     return ctx.db.mutation.createUser(
       { data: { name, email, pw, cart:{create:{}} } },
       info,
-    )},}
+    )},
+}
 
 module.exports = { auth }

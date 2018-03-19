@@ -1,6 +1,7 @@
 const { GraphQLServer } = require('graphql-yoga')
 const { Prisma } = require('prisma-binding')
 const { auth } = require('./resolvers/auth')
+const { cart } = require('./resolvers/cart')
 
 const resolvers = {
   Query: {
@@ -31,6 +32,7 @@ const resolvers = {
   },
   Mutation: {
     ...auth,
+    ...cart,
     updateUser(parent, { id, name, email, pw }, ctx, info) {
       return ctx.db.mutation.updateUser(
         {
@@ -54,45 +56,8 @@ const resolvers = {
         },
         info,
       )
-    },
-    addProductToCart(parent, { user_id, product_id }, ctx, info) {
-      return ctx.db.mutation.updateUser(
-        {
-          data: {
-            cart: {
-              update: {
-                products: { connect: [{ id: product_id }] }
-              }
-            }
-          },
-          where: { id: user_id },
-        }, info, )
-    },
-    removeProductFromCart(parent, { user_id, product_id }, ctx, info) {
-      return ctx.db.mutation.updateUser(
-        {
-          data: {
-            cart: {
-              update: {
-                products: { disconnect: [{ id: product_id }] }
-              }
-            }
-          },
-          where: { id }
-        }, info, )
-    },
-    clearCart(parent, { id }, ctx, info) {
-      return ctx.db.mutation.updateCart(
-        {
-          where: { id },
-          data: {
-            user: {
-              disconnect: user_id
-            }
-          }
-        }, info, )
-    },
-  },
+    },  
+  }
 }
 
 const server = new GraphQLServer({
@@ -108,5 +73,4 @@ const server = new GraphQLServer({
     }),
   }),
 })
-
 server.start(() => console.log('Server is running on http://localhost:4000'))
